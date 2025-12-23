@@ -1,0 +1,44 @@
+# Geoscan 201 Thermal Surveying System Requirements
+# Python 3.7+
+
+# Image processing and computer vision
+opencv-python>=4.5.0
+numpy>=1.19.0
+scipy>=1.5.0
+Pillow>=8.0.0
+
+# Thermal processing
+scikit-image>=0.17.0
+
+# Geospatial and GIS
+pyproj>=3.0.0
+shapely>=1.7.0
+rasterio>=1.2.0
+fiona>=1.8.0
+geopandas>=0.9.0
+
+# Data handling
+pandas>=1.1.0
+scipy>=1.5.0
+
+# Visualization
+matplotlib>=3.3.0
+seaborn>=0.11.0
+
+# Communication and data logging
+serial>=0.0.97
+paho-mqtt>=1.6.0
+
+# Utilities
+tqdm>=4.50.0
+python-dateutil>=2.8.0
+PyYAML>=5.3
+
+# Optional: GIS/Mapping visualization
+folium>=0.12.0
+basemap-data>=1.1.0
+basemap>=1.1.0
+
+# Development and testing
+pytest>=6.0.0
+pytest-cov>=2.10.0
