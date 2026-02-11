@@ -1,9 +1,3 @@
-#!/usr/bin/env python3
-"""
-Example usage of Geoscan 201 Thermal Surveying System
-Demonstrates thermal imaging, night vision, and geodesy processing
-"""
-
 from thermal_camera import ThermalCamera, NightVisionMode
 from geodesy_processor import GeoscanSurveyProcessor, SurveyMetadata, GeoPoint
 import numpy as np
