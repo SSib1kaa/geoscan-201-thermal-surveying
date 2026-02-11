@@ -1,9 +1,4 @@
-#!/usr/bin/env python3
-"""
-Geodesy Data Processor for Geoscan 201
-Processes thermal/thermal imagery for mapping, surveying, and GIS applications.
-Includes orthorectification, georeferencing, and thermal mosaic generation.
-"""
+
 
 import numpy as np
 from dataclasses import dataclass
