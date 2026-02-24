@@ -1,9 +1,3 @@
-#!/usr/bin/env python3
-"""
-Thermal Camera Module for Geoscan 201 UAV
-Handles infrared (IR) camera, thermal image processing, and night vision
-for geodesy and survey applications.
-"""
 
 import cv2
 import numpy as np
@@ -44,11 +38,9 @@ class ThermalCamera:
         self.frame_rate = 30
         self.resolution = (640, 480)
         
-        # Temperature calibration
         self.temp_offset = 0.0
         self.emissivity = 0.95
         
-        # Night vision settings
         self.night_mode_enabled = False
         self.night_mode_threshold = 50
         
@@ -75,21 +67,17 @@ class ThermalCamera:
     
     def apply_thermal_colormap(self, frame: np.ndarray) -> np.ndarray:
         """Apply thermal pseudocolor mapping to raw frame"""
-        # Convert to grayscale and normalize
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         normalized = cv2.normalize(gray, None, 0, 255, cv2.NORM_MINMAX)
         
-        # Apply thermal colormap (Iron or Turbo for better temperature visualization)
-        thermal_color = cv2.applyColorMap(normalized, cv2.COLORMAP_JET)
+     = cv2.applyColorMap(normalized, cv2.COLORMAP_JET)
         return thermal_color
     
     def calculate_temperatures(self, frame: np.ndarray) -> Tuple[float, float, float]:
         """Calculate min, max, and average temperatures from frame"""
-        # Simulate temperature calculation from thermal data
-        # Real implementation would use actual thermal sensor calibration
+
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY).astype(float)
         
-        # Map pixel values to temperature range (-40°C to 150°C)
         temp_min = -40 + (gray.min() / 255) * 190 + self.temp_offset
         temp_max = -40 + (gray.max() / 255) * 190 + self.temp_offset
         temp_avg = -40 + (gray.mean() / 255) * 190 + self.temp_offset
@@ -98,19 +86,15 @@ class ThermalCamera:
     
     def enhance_night_vision(self, frame: np.ndarray) -> np.ndarray:
         """Enhance image for night vision/low-light conditions"""
-        # Convert to LAB color space for better enhancement
         lab = cv2.cvtColor(frame, cv2.COLOR_BGR2LAB)
         l, a, b = cv2.split(lab)
         
-        # Apply CLAHE (Contrast Limited Adaptive Histogram Equalization)
         clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
         l = clahe.apply(l)
         
-        # Merge back
         enhanced = cv2.merge([l, a, b])
         enhanced = cv2.cvtColor(enhanced, cv2.COLOR_LAB2BGR)
         
-        # Apply slight noise reduction
         enhanced = cv2.bilateralFilter(enhanced, 9, 75, 75)
         
         return enhanced
@@ -119,10 +103,8 @@ class ThermalCamera:
         """Detect hot regions/anomalies in thermal image"""
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         
-        # Threshold to find hot regions
         _, binary = cv2.threshold(gray, threshold, 255, cv2.THRESH_BINARY)
         
-        # Find contours
         contours, _ = cv2.findContours(binary, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         
         regions = []
@@ -141,18 +123,14 @@ class ThermalCamera:
         """Process thermal frame and extract data"""
         timestamp = time.time()
         
-        # Apply thermal colormap
         thermal_colored = self.apply_thermal_colormap(frame)
         
-        # Calculate temperatures
         temp_min, temp_max, temp_avg = self.calculate_temperatures(frame)
         
-        # Night vision enhancement (if enabled)
         night_enhanced = None
         if self.night_mode_enabled:
             night_enhanced = self.enhance_night_vision(frame)
         
-        # Detect hot regions
         hot_regions = self.detect_hot_regions(thermal_colored, self.night_mode_threshold)
         
         return ThermalImageData(
@@ -180,7 +158,6 @@ class ThermalCamera:
     
     def calibrate_temperature_offset(self, reference_temp: float, measured_pixel_value: int):
         """Calibrate temperature offset using reference temperature"""
-        # Calculate offset based on reference
         expected_value = (-40 + (reference_temp + 40) / 190 * 255)
         self.temp_offset = reference_temp - (-40 + (measured_pixel_value / 255) * 190)
     
@@ -201,13 +178,11 @@ class NightVisionMode:
     
     def process(self, frame: np.ndarray) -> np.ndarray:
         """Apply night vision processing"""
-        # Increase brightness
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV).astype(np.float32)
         hsv[:, :, 2] = hsv[:, :, 2] * (1.0 + self.sensitivity)
         hsv[:, :, 2] = np.clip(hsv[:, :, 2], 0, 255)
         enhanced = cv2.cvtColor(hsv.astype(np.uint8), cv2.COLOR_HSV2BGR)
         
-        # Denoise
         for _ in range(self.noise_reduction_level):
             enhanced = cv2.fastNlMeansDenoisingColored(enhanced, None, 10, 10, 7, 21)
         
